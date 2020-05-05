@@ -35,7 +35,7 @@ def get_texts(shuffle=False):
     return lines
     
 
-def main():
+def main(wait_time_hours=24):
     api = create_api()
     
     tweet_texts = get_texts(shuffle=True)
@@ -46,7 +46,7 @@ def main():
             call_return_status = api.update_status(text)
             logging.info(call_return_status)
             
-            time.sleep(60*60*24)  # wait 24h
+            time.sleep(60*60*wait_time_hours)  # wait 24h
 
 if __name__ == '__main__':
-    main()
+    main(wait_time_hours=4)
