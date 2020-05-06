@@ -71,6 +71,12 @@ def main(wait_time_hours):
             # single tweets can not be longer, so split into chunks
             if len(text) <= max_tweet_size:
                 chunks = [text]
+
+                ##
+                continue
+                ##
+
+
             else:
                 chunks = get_splitted_texts(text, max_tweet_size)
                 chunks = list(chunks)
