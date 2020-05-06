@@ -75,7 +75,7 @@ def main(wait_time_hours):
             else:
                 chunks = get_splitted_texts(text, max_tweet_size)
                 chunks = list(chunks)
-                chunks = [chunk.replace('/0', f'/{len(chunks)}' for chunk in chunks]
+                chunks = [chunk.replace('/0', f'/{len(chunks)}') for chunk in chunks]
 
             tweet_id = None
             for chunk in chunks:
