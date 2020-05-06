@@ -66,28 +66,34 @@ def main(wait_time_hours):
     while True:
         for text in tweet_texts:
 
-            logging.info(text)
+            try:
 
-            # single tweets can not be longer, so split into chunks
-            if len(text) <= max_tweet_size:
-                chunks = [text]
+                logging.info(text)
 
-            else:
-                chunks = get_splitted_texts(text, max_tweet_size)
-                chunks = list(chunks)
-                chunks = [chunk.replace('/0', f'/{len(chunks)}') for chunk in chunks]
+                # single tweets can not be longer, so split into chunks
+                if len(text) <= max_tweet_size:
+                    chunks = [text]
 
-            tweet_id = None
-            for chunk in chunks:
+                else:
+                    chunks = get_splitted_texts(text, max_tweet_size)
+                    chunks = list(chunks)
+                    chunks = [chunk.replace('/0', f'/{len(chunks)}') for chunk in chunks]
 
-                logging.info(chunk)
-                call_return_status = api.update_status(chunk, tweet_id)
+                tweet_id = None
+                for chunk in chunks:
 
-                tweet_id = call_return_status.id
+                    logging.info(chunk)
+                    call_return_status = api.update_status(chunk, tweet_id)
 
-                logging.info(call_return_status)
+                    tweet_id = call_return_status.id
 
-            time.sleep(60*60*wait_time_hours)  # wait 24h
+                    logging.info(call_return_status)
+
+                time.sleep(60*60*wait_time_hours)  # wait 24h
+
+            except tweepy.error.TweepError as e:
+                logging.error(e)
+
 
 if __name__ == '__main__':
     main(wait_time_hours=4)
