@@ -42,7 +42,7 @@ def get_splitted_texts(s, max_tweet_size):
 
     # start string with first word, then begin loop on second
     tweet_number = 1
-    new_tweet = f"{tweet_number}/"
+    new_tweet = f"{tweet_number}/0"
 
     for word in words:
 
@@ -51,7 +51,7 @@ def get_splitted_texts(s, max_tweet_size):
         else:
             yield new_tweet + ' ...'
             tweet_number += 1
-            new_tweet = f"{tweet_number}/ ... " + word
+            new_tweet = f"{tweet_number}/0 ... " + word
     yield  new_tweet
 
 
@@ -73,6 +73,9 @@ def main(wait_time_hours):
                 chunks = [text]
             else:
                 chunks = get_splitted_texts(text, max_tweet_size)
+                chunks = list(chunks)
+                l = len(chunks)
+                chunks = [chunk.replace('/0', '/'+l) for chunk in chunks]
 
             tweet_id = None
             for chunk in chunks:
