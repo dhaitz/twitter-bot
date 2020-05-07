@@ -96,4 +96,5 @@ def main(wait_time_hours):
 
 
 if __name__ == '__main__':
-    main(wait_time_hours=4)
+    wait_time_hours = float(os.getenv("WAIT_TIME_HOURS"))
+    main(wait_time_hours=wait_time_hours)
