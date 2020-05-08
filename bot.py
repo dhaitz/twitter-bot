@@ -3,7 +3,10 @@ import tweepy
 import logging
 import os
 import time
+import datetime
 
+
+MAX_TWEET_SIZE = 280
 
 def create_api():
     consumer_key = os.getenv("CONSUMER_KEY")
@@ -36,7 +39,7 @@ def get_texts(shuffle=False):
 
 
 
-def get_splitted_texts(s, max_tweet_size):
+def get_splitted_texts(s):
 
     words = s.split()
 
@@ -46,7 +49,7 @@ def get_splitted_texts(s, max_tweet_size):
 
     for word in words:
 
-        if len(new_tweet + ' ' + word + ' ...') < max_tweet_size:  # if tweet is short enough with word appended, keep appending
+        if len(new_tweet + ' ' + word + ' ...') < MAX_TWEET_SIZE:  # if tweet is short enough with word appended, keep appending
             new_tweet = new_tweet + ' ' + word
         else:
             yield new_tweet + ' ...'
@@ -55,8 +58,10 @@ def get_splitted_texts(s, max_tweet_size):
     yield  new_tweet
 
 
-max_tweet_size = 280
 
+def wait_until_certain_hour_to_start(start_hour):
+    while datetime.datetime.now().hour != start_hour:
+        time.sleep(30*60)   # wait half an hour, then check again
 
 def main(wait_time_hours):
     api = create_api()
@@ -71,11 +76,11 @@ def main(wait_time_hours):
                 logging.info(text)
 
                 # single tweets can not be longer, so split into chunks
-                if len(text) <= max_tweet_size:
+                if len(text) <= MAX_TWEET_SIZE:
                     chunks = [text]
 
                 else:
-                    chunks = get_splitted_texts(text, max_tweet_size)
+                    chunks = get_splitted_texts(text)
                     chunks = list(chunks)
                     chunks = [chunk.replace('/0', f'/{len(chunks)}') for chunk in chunks]
 
@@ -96,5 +101,7 @@ def main(wait_time_hours):
 
 
 if __name__ == '__main__':
-    wait_time_hours = float(os.getenv("WAIT_TIME_HOURS"))
-    main(wait_time_hours=wait_time_hours)
+
+    wait_until_certain_hour_to_start(start_hour=os.getenv('START_HOUR'))
+
+    main(wait_time_hours=float(os.getenv("WAIT_TIME_HOURS")))
