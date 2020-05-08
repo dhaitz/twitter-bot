@@ -61,7 +61,9 @@ def get_splitted_texts(s):
 
 def wait_until_certain_hour_to_start(start_hour):
     while datetime.datetime.now().hour != start_hour:
+        logging.info("Current hour: {datetime.datetime.now().hour},  start hour: {start_hour}  -> waiting ...")
         time.sleep(30*60)   # wait half an hour, then check again
+    logging.info("Current hour: {datetime.datetime.now().hour} ==  start hour: {start_hour}")
 
 def main(wait_time_hours):
     api = create_api()
@@ -102,6 +104,6 @@ def main(wait_time_hours):
 
 if __name__ == '__main__':
 
-    wait_until_certain_hour_to_start(start_hour=os.getenv('START_HOUR'))
+    wait_until_certain_hour_to_start(start_hour=int(os.getenv('START_HOUR')))
 
     main(wait_time_hours=float(os.getenv("WAIT_TIME_HOURS")))
