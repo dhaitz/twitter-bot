@@ -15,6 +15,12 @@ START_HOUR_DEFAULT = 10
 START_HOUR = int(os.getenv('START_HOUR', default=START_HOUR_DEFAULT))
 
 
+# Twitter doesnt allow duplicate tweets.
+# So, if we have reached the loop and are tweeting a text for the second time, we first have to delete the old tweet.
+# The needed tweet IDs are tracked via this dict:
+tweets_and_their_ids = {}
+
+
 def run_bot(input_file: str, wait_time_hours: float) -> None:
     """Get texts from file, format into tweets, tweet and wait"""
     api = create_api()
@@ -35,10 +41,15 @@ def run_bot(input_file: str, wait_time_hours: float) -> None:
 
                     logging.info(tweet)
 
+                    # remove old same tweet as duplicate tweets are not allowed by Twitter
+                    if tweet in tweets_and_their_ids:
+                        api.destroy_status(tweets_and_their_ids[tweet])
+
                     call_return_status = api.update_status(tweet, id_of_thread_tweet_to_reply_to)
                     logging.info(call_return_status)
 
                     id_of_thread_tweet_to_reply_to = call_return_status.id
+                    tweets_and_their_ids[tweet] = call_return_status.id
 
                 time.sleep(60*60*wait_time_hours)  # turn hours into seconds
 
