@@ -11,7 +11,7 @@ MAX_TWEET_SIZE = 280
 WAIT_TIME_HOURS_DEFAULT = 24
 WAIT_TIME_HOURS = float(os.getenv("WAIT_TIME_HOURS", default=WAIT_TIME_HOURS_DEFAULT))
 
-START_HOUR = int(os.getenv('START_HOUR'))
+START_HOUR = os.getenv('START_HOUR')
 
 
 # Twitter doesnt allow duplicate tweets.
@@ -128,6 +128,7 @@ def wait_until_certain_hour_to_start(start_hour: int) -> None:
 
 if __name__ == '__main__':
 
-    wait_until_certain_hour_to_start(start_hour=START_HOUR)
+    if START_HOUR is not None:
+        wait_until_certain_hour_to_start(start_hour=int(START_HOUR))
 
     run_bot(wait_time_hours=WAIT_TIME_HOURS, input_file='tweet_short.txt')
