@@ -11,8 +11,7 @@ MAX_TWEET_SIZE = 280
 WAIT_TIME_HOURS_DEFAULT = 24
 WAIT_TIME_HOURS = float(os.getenv("WAIT_TIME_HOURS", default=WAIT_TIME_HOURS_DEFAULT))
 
-START_HOUR_DEFAULT = 10
-START_HOUR = int(os.getenv('START_HOUR', default=START_HOUR_DEFAULT))
+START_HOUR = int(os.getenv('START_HOUR'))
 
 
 # Twitter doesnt allow duplicate tweets.
