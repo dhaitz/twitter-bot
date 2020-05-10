@@ -1,5 +1,8 @@
 # Twitter Bot 
 
+[![Build Status](https://travis-ci.com/dhaitz/twitter-bot.svg?token=dNDGtapxsNESrm54LMG7&branch=master)](https://travis-ci.com/dhaitz/twitter-bot)
+[![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/release/python-370/)
+
 A bot that tweets from a txt file.
 Written in Python, deployment via Travis-CI to Heroku.
 Inspired by [heroku-twitter-bot](https://emcain.github.io/heroku-twitter-bot/).
