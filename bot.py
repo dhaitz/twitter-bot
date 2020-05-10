@@ -13,11 +13,7 @@ WAIT_TIME_HOURS = float(os.getenv("WAIT_TIME_HOURS", default=WAIT_TIME_HOURS_DEF
 
 START_HOUR = os.getenv('START_HOUR')
 
-
-# Twitter doesnt allow duplicate tweets.
-# So, if we have reached the loop and are tweeting a text for the second time, we first have to delete the old tweet.
-# The needed tweet IDs are tracked via this dict:
-tweets_and_their_ids = {}
+ACCOUNT_NAME = os.getenv('ACCOUNT_NAME', default='cog_biased')
 
 
 def run_bot(input_file: str, wait_time_hours: float) -> None:
@@ -40,15 +36,12 @@ def run_bot(input_file: str, wait_time_hours: float) -> None:
 
                     logging.info(tweet)
 
-                    # remove old same tweet as duplicate tweets are not allowed by Twitter
-                    if tweet in tweets_and_their_ids:
-                        api.destroy_status(tweets_and_their_ids[tweet])
+                    delete_existing_tweets_with_same_text(api, tweet)  # remove old same tweet as duplicate tweets are not allowed by Twitter
 
                     call_return_status = api.update_status(tweet, id_of_thread_tweet_to_reply_to)
                     logging.info(call_return_status)
 
                     id_of_thread_tweet_to_reply_to = call_return_status.id
-                    tweets_and_their_ids[tweet] = call_return_status.id
 
                 time.sleep(60*60*wait_time_hours)  # turn hours into seconds
 
@@ -124,6 +117,16 @@ def wait_until_certain_hour_to_start(start_hour: int) -> None:
         logging.info("Current hour: {datetime.datetime.now().hour},  start hour: {start_hour}  -> waiting ...")
         time.sleep(30*60)   # wait half an hour, then check again
     logging.info("Current hour: {datetime.datetime.now().hour} ==  start hour: {start_hour}")
+
+
+def delete_existing_tweets_with_same_text(api: tweepy.API, tweet: str) -> None:
+    results = api.search(q=tweet, tweet_mode='extended')
+
+    for result in results:
+
+        if result.user.screen_name == ACCOUNT_NAME and result.full_text == tweet:
+            print(f"Deleting tweet {result.id}")
+            api.destroy_status(result.id)
 
 
 if __name__ == '__main__':
