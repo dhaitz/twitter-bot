@@ -131,4 +131,4 @@ if __name__ == '__main__':
     if START_HOUR is not None:
         wait_until_certain_hour_to_start(start_hour=int(START_HOUR))
 
-    run_bot(wait_time_hours=WAIT_TIME_HOURS, input_file='tweet_short.txt')
+    run_bot(wait_time_hours=WAIT_TIME_HOURS, input_file='tweets.txt')
